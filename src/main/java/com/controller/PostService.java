@@ -21,6 +21,8 @@ public class PostService {
 	@Autowired
 	LikesDAO lD;
 	@Autowired
+
+
 	CommentDAO cD;
 	
 public ArrayList<Post> submitPostToDB(Post postData) throws BlankPostException{
@@ -48,14 +50,14 @@ public ArrayList<Post> submitPostToDB(Post postData) throws BlankPostException{
 	return result;
     }
 
-   public ResponseEntity addaLike(Integer postID, Likes i) {
+ public ResponseEntity addaLike(Integer postID, Likes i) {
 		lD.save(i);
 		postDao.getById(postID).getLikes().add(i.getLikeId());
 		postDao.flush();
 		return new ResponseEntity("Post Liked",HttpStatus.OK);
 }
 
-   public ResponseEntity addaComment(Integer postID, Comment i) {
+public ResponseEntity addaComment(Integer postID, Comment i) {
 	cD.save(i);
 	Post p=postDao.getById(postID);
 	p.getComments().add(i.getCommentId());
@@ -70,5 +72,25 @@ public ResponseEntity deleteaComment(Integer postID, Integer commentId) {
 	cD.deleteById(commentId);
 	return new ResponseEntity("Comment deleted",HttpStatus.OK);
 }
+	public ArrayList<Comment> retrivePostCommentsFromDB(Integer postID) {
+	Post p=postDao.getById(postID);
+	
+	ArrayList<Comment> result=(ArrayList<Comment>) cD.findAllById(p.getComments());
+	return result;
+}
+
+public ArrayList<Likes> retrivePostLikesFromDB(Integer postID) {
+Post p=postDao.getById(postID);
+	
+	ArrayList<Likes> result=(ArrayList<Likes>) lD.findAllById(p.getLikes());
+	return result;
+}
+
+public int retrivePostLikeCountFromDB(Integer postID) {
+	Post p=postDao.getById(postID);
+	int count=p.getLikes().size();
+	return count;
+}
+
    	
 }
