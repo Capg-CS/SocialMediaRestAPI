@@ -1,0 +1,67 @@
+package com.controller;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+import com.dao.*;
+import com.exception.BlankPostException;
+import com.model.Comment;
+import com.model.Likes;
+import com.model.Post;
+
+@Component
+public class PostService {
+	@Autowired
+	PostDAO postDao;
+	
+public ArrayList<Post> submitPostToDB(Post postData) throws BlankPostException{
+	String s=postData.getDescription().trim();
+	if(s!="") {
+	Date date=new Date();
+	postData.setDate(date);
+		postDao.save(postData);
+		ArrayList<Post> result=retrivePostFromDB();
+		return result;
+		}
+	else {
+		throw new BlankPostException("Post is Empty");
+	}
+	}
+
+   public ArrayList<Post> retrivePostFromDB(){
+	ArrayList<Post> result=(ArrayList<Post>) postDao.findAll();
+	return result;
+   }
+   public ArrayList<Post> deletePostFromDB(Integer postID){
+	postDao.deleteById(postID);
+	
+	ArrayList<Post> result=retrivePostFromDB();
+	return result;
+    }
+
+public ResponseEntity addaLike(Integer postID, Integer i) {
+	postDao.getById(postID).getLikes().add(i);
+	postDao.flush();
+	return new ResponseEntity("Post Liked",HttpStatus.OK);
+}
+
+public ResponseEntity addaComment(Integer postID, Integer i) {
+	Post p=postDao.getById(postID);
+	p.getComments().add(i);
+	postDao.save(p);
+	return new ResponseEntity("Comment added",HttpStatus.OK);
+}
+
+public ResponseEntity deleteaComment(Integer postID, Integer commentId) {
+	Post p=postDao.getById(postID);
+	p.getComments().remove(commentId);
+	postDao.save(p);
+	return new ResponseEntity("Comment deleted",HttpStatus.OK);
+}
+   	
+}
