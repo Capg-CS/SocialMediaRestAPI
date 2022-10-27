@@ -25,7 +25,7 @@ import org.springframework.web.client.RestTemplate;
 import com.controller.*;
 import com.dao.*;
 import com.model.*;
-
+import com.model.Comment.CommentStatus;
 import com.exception.NoCommentFoundException;
 
 @SpringBootTest
@@ -166,5 +166,44 @@ class CommentTest {
 		String str="commentId="+comment.getCommentId()+", commentText="+comment.getCommentText()+", commentBy="+comment.getCommentBy();
 		Assertions.assertEquals(true,commentservice.getCommentService(comment.getCommentId()).toString().contains(str));	
 	}
+	
+	@Test
+    public void testaddlikecommentservice() throws URISyntaxException, NoCommentFoundException{
+        Comment comment=new Comment();
+        comment.setCommentBy("user123");
+        comment.setCommentText("Great");
+        comment.setStatus(CommentStatus.ACTIVE);
+        
+        List<Likes> likeslist=new ArrayList<>();
+        Likes likes=new Likes();
+        likes.setLikeBy("user456");
+        likeslist.add(likes);
+        comment.setLikes(likeslist);
+        commentdao.save(comment);
+        Assertions.assertEquals(true,commentservice.getCommentService(comment.getCommentId()).toString().contains(likes.toString()));    
+    }
+	
+	@Test
+    public void testaddlikecomment() throws URISyntaxException, NoCommentFoundException{
+        RestTemplate template=new RestTemplate();
+        Comment comment=new Comment();
+        comment.setCommentBy("user1234");
+        comment.setCommentText("Great Words");
+        comment.setStatus(CommentStatus.ACTIVE);
+        
+        List<Likes> likeslist=new ArrayList<>();
+        Likes likes=new Likes();
+        likes.setLikeBy("user416");
+        comment.setLikes(likeslist);
+        commentdao.save(comment);
+        final String url="http://localhost:8080/likecomment/"+comment.getCommentId();
+        ResponseEntity<String> res=template.postForEntity(url, likes, String.class);
+        Assertions.assertEquals(HttpStatus.OK, res.getStatusCode());
+        Assertions.assertEquals(200,res.getStatusCodeValue());
+        Assertions.assertEquals(true,res.toString().contains("Comment Liked"));    
+        commentdao.deleteAll();
+    }
+	
+	
 }
 	

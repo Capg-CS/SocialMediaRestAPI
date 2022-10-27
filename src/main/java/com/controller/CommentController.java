@@ -1,5 +1,7 @@
 package com.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,9 +52,19 @@ public class CommentController {
 			return comment;
 		} catch (NoCommentFoundException e) {
 			throw new NoCommentFoundException("No Comment Found");
-		}
-
-		
-		
+		}		
 	}
+	
+	@GetMapping("/getallcomment")
+    public List<Comment> getAllComment(){
+        return commentservice.getAllCommentService();
+    }
+    
+    @PostMapping("/likecomment/{commentId}")
+    public ResponseEntity addlikecomment(@PathVariable int commentId,@RequestBody Likes likes) {
+            commentservice.addlikecommentservice(commentId, likes);
+        return new ResponseEntity("Comment Liked",HttpStatus.OK);
+    }
+	
+	
 }
