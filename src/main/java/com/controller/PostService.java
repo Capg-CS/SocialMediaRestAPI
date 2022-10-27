@@ -21,8 +21,6 @@ public class PostService {
 	@Autowired
 	LikesDAO lD;
 	@Autowired
-
-
 	CommentDAO cD;
 	
 public ArrayList<Post> submitPostToDB(Post postData) throws BlankPostException{
