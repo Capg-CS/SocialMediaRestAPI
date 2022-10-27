@@ -18,6 +18,10 @@ import com.model.Post;
 public class PostService {
 	@Autowired
 	PostDAO postDao;
+	@Autowired
+	LikesDAO lD;
+	@Autowired
+	CommentDao cD;
 	
 public ArrayList<Post> submitPostToDB(Post postData) throws BlankPostException{
 	String s=postData.getDescription().trim();
@@ -44,15 +48,17 @@ public ArrayList<Post> submitPostToDB(Post postData) throws BlankPostException{
 	return result;
     }
 
-public ResponseEntity addaLike(Integer postID, Integer i) {
-	postDao.getById(postID).getLikes().add(i);
+public ResponseEntity addaLike(Integer postID, Likes i) {
+	lD.save(i);
+	postDao.getById(postID).getLikes().add(i.getLikeId());
 	postDao.flush();
 	return new ResponseEntity("Post Liked",HttpStatus.OK);
 }
 
-public ResponseEntity addaComment(Integer postID, Integer i) {
+public ResponseEntity addaComment(Integer postID, Comment i) {
+	cD.save(i);
 	Post p=postDao.getById(postID);
-	p.getComments().add(i);
+	p.getComments().add(i.getCommentId());
 	postDao.save(p);
 	return new ResponseEntity("Comment added",HttpStatus.OK);
 }
@@ -61,6 +67,7 @@ public ResponseEntity deleteaComment(Integer postID, Integer commentId) {
 	Post p=postDao.getById(postID);
 	p.getComments().remove(commentId);
 	postDao.save(p);
+	cD.deleteById(commentId);
 	return new ResponseEntity("Comment deleted",HttpStatus.OK);
 }
    	
