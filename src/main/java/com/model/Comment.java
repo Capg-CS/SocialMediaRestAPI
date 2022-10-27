@@ -2,7 +2,6 @@ package com.model;
 import java.util.List;
 
 import javax.persistence.*;
-import javax.persistence.Id;
 
 import lombok.*;
 
@@ -14,7 +13,7 @@ import lombok.*;
 @Entity
 public class Comment {
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int commentId;
 	private String commentText;
 	private String commentBy;

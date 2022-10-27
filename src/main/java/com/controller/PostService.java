@@ -21,7 +21,9 @@ public class PostService {
 	@Autowired
 	LikesDAO lD;
 	@Autowired
-	CommentDao cD;
+
+
+	CommentDAO cD;
 	
 public ArrayList<Post> submitPostToDB(Post postData) throws BlankPostException{
 	String s=postData.getDescription().trim();
@@ -48,11 +50,11 @@ public ArrayList<Post> submitPostToDB(Post postData) throws BlankPostException{
 	return result;
     }
 
-public ResponseEntity addaLike(Integer postID, Likes i) {
-	lD.save(i);
-	postDao.getById(postID).getLikes().add(i.getLikeId());
-	postDao.flush();
-	return new ResponseEntity("Post Liked",HttpStatus.OK);
+ public ResponseEntity addaLike(Integer postID, Likes i) {
+		lD.save(i);
+		postDao.getById(postID).getLikes().add(i.getLikeId());
+		postDao.flush();
+		return new ResponseEntity("Post Liked",HttpStatus.OK);
 }
 
 public ResponseEntity addaComment(Integer postID, Comment i) {
