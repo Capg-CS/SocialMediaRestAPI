@@ -59,6 +59,21 @@ public class PostController {
 		
 		return postService.deleteaComment(postID,commentId);
 	}
+	@PostMapping("/getpostcomments/{postId}")
+    public ArrayList<Comment> retrieveAllPostComment(@PathVariable("postId") Integer postID){
+        ArrayList<Comment> result=postService.retrivePostCommentsFromDB(postID);
+        return result;
+    }
+    @PostMapping("/getpostLikecount/{postId}")
+    public int retrievePostLikeCount(@PathVariable("postId") Integer postID){
+        int result=postService.retrivePostLikeCountFromDB(postID);
+        return result;
+    }
+    @PostMapping("/getpostLikes/{postId}")
+    public ArrayList<Likes> retrieveAllPostLikes(@PathVariable("postId") Integer postID){
+        ArrayList<Likes> result=postService.retrivePostLikesFromDB(postID);
+        return result;
+    }
 	
 	
 }

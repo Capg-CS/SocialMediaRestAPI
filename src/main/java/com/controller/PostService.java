@@ -70,5 +70,29 @@ public ResponseEntity deleteaComment(Integer postID, Integer commentId) {
 	cD.deleteById(commentId);
 	return new ResponseEntity("Comment deleted",HttpStatus.OK);
 }
+
+public ArrayList<Comment> retrivePostCommentsFromDB(Integer postID) {
+    Post p=postDao.getById(postID);
+    
+    ArrayList<Comment> result=(ArrayList<Comment>) cD.findAllById(p.getComments());
+    return result;
+}
+
+
+
+public ArrayList<Likes> retrivePostLikesFromDB(Integer postID) {
+Post p=postDao.getById(postID);
+    
+    ArrayList<Likes> result=(ArrayList<Likes>) lD.findAllById(p.getLikes());
+    return result;
+}
+
+
+
+public int retrivePostLikeCountFromDB(Integer postID) {
+    Post p=postDao.getById(postID);
+    int count=p.getLikes().size();
+    return count;
+}
    	
 }
