@@ -43,14 +43,14 @@ public class PostController {
 		return result;
 	}
 	@PostMapping("/addLike/{postId}")
-	public ResponseEntity addLike(@PathVariable("postId") Integer postID,@RequestParam Integer likeId) {
+	public ResponseEntity addLike(@PathVariable("postId") Integer postID,@RequestBody Likes like) {
 		
-		return postService.addaLike(postID,likeId);
+		return postService.addaLike(postID,like);
 	}
 	@PostMapping("/addcomment/{postId}")
-	public ResponseEntity addComment(@PathVariable("postId") Integer postID,@RequestParam Integer commentId) {
+	public ResponseEntity addComment(@PathVariable("postId") Integer postID,@RequestBody Comment comment) {
 		
-		return postService.addaComment(postID,commentId );
+		return postService.addaComment(postID,comment );
 	}
 	@PostMapping("/deletecomment")
 	public ResponseEntity deleteComment(@RequestParam  Integer postID, @RequestParam Integer commentId) {
