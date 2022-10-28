@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import com.controller.PostService;
 import com.dao.PostDAO;
 import com.model.Post;
+import com.model.Post.PostStatus;
 
 @SpringBootTest
 public class PostTest {
@@ -70,24 +71,11 @@ void testDeletePostService() {
 }
 @Test
 void testServiceGetPost() {
-	List<Post>list=ps.retrivePostFromDB();
-	Assertions.assertEquals(postDao.count(),list.size());
+    Post p2=new Post();
+    p2.setStatus(PostStatus.BLOCKED);
+    p2.setDescription("hi");
+    postDao.saveAndFlush(p2);
+    List<Post>list=ps.retrivePostFromDB();
+    Assertions.assertEquals(postDao.count()-1,list.size());
 }
-
-//@Test
-//void testServiceAddLikeAddComment() {
-//	Post p=new Post();
-//	p.setDescription("abc");
-//	p.setPostedBy("user1");
-//	postDao.saveAndFlush(p);
-//	Post pl=postDao.findAll().get(0);
-//	ResponseEntity re=ps.addaComment(pl.getPostId(),1);
-//	ResponseEntity ru=ps.addaLike(pl.getPostId(),1);
-//	Post pp=postDao.getById(pl.getPostId());
-//	Integer i=pp.getLikes().get(0);
-//	Assertions.assertEquals(i,1);
-//	Integer j=pp.getComments().get(0);
-//	Assertions.assertEquals(j,1);
-//}
-
  }

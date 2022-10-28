@@ -49,24 +49,6 @@ class GroupTest {
 		Groups grpcheck=gdao.findById(grp1.getGroupId()).get();
 		Assertions.assertEquals(grp1.getGroupName(),grpcheck.getGroupName());
 	}
-	//addcontrollergroup
-//	@Test
-//	void testcontrolleraddGroup() throws URISyntaxException {
-//		RestTemplate temp=new RestTemplate();
-//		final String url="http://localhost:8080/creategroup";	
-//		Groups grp1=new Groups();
-//		grp1.setGroupId("1");
-//		grp1.setGroupName("MarvelS");
-//		grp1.setCreatedBy("Peter");
-//		grp1.setStatus(Status.ACTIVE);
-//		gdao.save(grp1);				
-//		URI uri=new URI(url);		
-//		HttpHeaders headers=new HttpHeaders();
-//		HttpEntity<Groups> req=new HttpEntity<>(grp1,headers);
-//		ResponseEntity <String> res=temp.postForEntity(uri,req, String.class);
-//		Assertions.assertEquals(HttpStatus.OK, res.getStatusCode());
-//		Assertions.assertEquals(true,res.toString().contains("Group added"));
-//	}
 	
 	//addusergroup
 	@Test
@@ -80,24 +62,6 @@ class GroupTest {
 		Users ucheck=userdao.findByUserId(u1.getUserId());
 		Assertions.assertEquals(u1.getEmailId(),ucheck.getEmailId());
 	}
-	//controlleraddusergroup
-//	@Test
-//	void testcontrollerAddUserGroup()  throws URISyntaxException{
-//		Users u1=new Users();
-//		u1.setUserId("abc");
-//		u1.setEmailId("peter@gmail.com");
-//		u1.setAge(20);
-//		u1.setPassword("password");
-//		userdao.save(u1);
-//		RestTemplate temp=new RestTemplate();
-//		final String url="http://localhost:8080/addusertogroup";		
-//		URI uri=new URI(url);		
-//		HttpHeaders headers=new HttpHeaders();
-//		HttpEntity<Users> req=new HttpEntity<>(u1,headers);
-//		ResponseEntity <String> res=temp.postForEntity(uri,req, String.class);
-//		Assertions.assertEquals(HttpStatus.OK, res.getStatusCode());
-//		Assertions.assertEquals(true,res.toString().contains("User added"));
-//	}
 	
 	//deleteusergroup
 	@Test
@@ -112,23 +76,6 @@ class GroupTest {
         //userdao.deleteByUserId("abc");
         Assertions.assertFalse(userdao.findAll().toString().contains(u1.toString()));    
     }
-	
-	//controllerdeleteusergroup
-//	@Test
-//    public void testcontrollerDeleteGroupUsers() throws URISyntaxException{
-//		Users u1=new Users();
-//		u1.setUserId("abc");
-//		u1.setEmailId("peter@gmail.com");
-//		u1.setAge(20);
-//		u1.setPassword("password");
-//		userdao.save(u1);        
-//		final String url="http://localhost:8080/removeuserfromgroup";		
-//		URI uri=new URI(url);		
-//		HttpEntity<Users> entity=new HttpEntity<Users>(u1);
-//		RestTemplate temp=new RestTemplate();
-//		temp.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
-//		Assertions.assertEquals("User deleted",temp.exchange(uri,HttpMethod.DELETE,entity,String.class).getBody());
-//    }
 		
 		//jointogroup
 		@Test
@@ -139,20 +86,6 @@ class GroupTest {
 			userdao.findByUserId(u1.getUserId());
 		    Assertions.assertTrue(userdao.findAll().toString().contains(u1.toString()));  
 		}
-		
-		//controllerjointogroup
-//		@Test
-//		void testcontrollerjointogroup() throws URISyntaxException{
-//			Users u1=new Users();
-//			u1.setUserId("abc");
-//			userdao.save(u1);
-//			final String url="http://localhost:8080//jointogroup/"+u1.getUserId();		
-//			URI uri=new URI(url);		
-//			HttpEntity<Users> entity=new HttpEntity<Users>(u1);
-//			RestTemplate temp=new RestTemplate();
-//			temp.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
-//			Assertions.assertEquals("Request sent to join",temp.exchange(uri,HttpMethod.GET,entity,String.class).getBody()); 
-//		}
 		
 		
 		//-------------------------------------Admin----------------------------------

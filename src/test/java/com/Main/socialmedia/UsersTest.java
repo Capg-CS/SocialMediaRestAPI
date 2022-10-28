@@ -49,12 +49,6 @@ class UsersTest {
 	
 	int port=8080;
 	
-//	@AfterEach
-//	void demo() {
-//		udao.deleteAll();
-//		udao.flush();
-//	}
-	
 	@Test
 	void testAddUsers() {
 		List<String> list1 = Arrays.asList(new String[]{"B123", "C123"});
@@ -95,24 +89,6 @@ class UsersTest {
 		Assertions.assertEquals(u.getEmailId(), u1.getEmailId());
 		
 	}
-
-	@Test
-    void testDestroySession1() throws URISyntaxException, JsonProcessingException {
-		
-	    RestTemplate template=new RestTemplate();
-	    final String url="http://localhost:" + port + "/adduser";
-	    URI uri=new URI(url);
-	    
-	    List<String> list1 = Arrays.asList(new String[]{"B123", "C123"});
-	    Users u=new Users("peter100","peter@gmail.com","xxx",22,UserStatus.ACTIVE,list1,null,null,null,null);
-	    
-	    HttpHeaders headers=new HttpHeaders();
-        HttpEntity<Users> req=new HttpEntity<>(u,headers);
-        
-	    ResponseEntity<String> res=template.postForEntity(uri,req ,String.class);
-	    Assertions.assertEquals(HttpStatus.OK,res.getStatusCode());
-      
-    }
 	
 	
 	//--------------AuthenticateUser--------------

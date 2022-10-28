@@ -13,6 +13,7 @@ import com.exception.BlankPostException;
 import com.model.Comment;
 import com.model.Likes;
 import com.model.Post;
+import com.model.Post.PostStatus;
 
 @Component
 public class PostService {
@@ -28,6 +29,7 @@ public ArrayList<Post> submitPostToDB(Post postData) throws BlankPostException{
 	if(s!="") {
 	Date date=new Date();
 	postData.setDate(date);
+	postData.setStatus(PostStatus.ACTIVE);
 		postDao.save(postData);
 		ArrayList<Post> result=retrivePostFromDB();
 		return result;
@@ -37,10 +39,18 @@ public ArrayList<Post> submitPostToDB(Post postData) throws BlankPostException{
 	}
 	}
 
-   public ArrayList<Post> retrivePostFromDB(){
-	ArrayList<Post> result=(ArrayList<Post>) postDao.findAll();
-	return result;
+public ArrayList<Post> retrivePostFromDB(){
+    ArrayList<Post> arr=(ArrayList<Post>) postDao.findAll();
+    ArrayList<Post> result=new ArrayList<>();
+    for(Post p :arr) {
+        if(p.getStatus().equals(PostStatus.ACTIVE)) {
+            result.add(p);
+        }
+            
+    }
+    return result;
    }
+   
    public ArrayList<Post> deletePostFromDB(Integer postID){
 	postDao.deleteById(postID);
 	

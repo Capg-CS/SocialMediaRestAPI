@@ -107,24 +107,8 @@ public class FriendRequestTest {
         ResponseEntity <String> res=temp.postForEntity(uri,req, String.class);
         Assertions.assertEquals(HttpStatus.OK, res.getStatusCode());
     }	
-	
-//	@Test
-//    void testcontrollerAcceptRequest() throws URISyntaxException {
-//        RestTemplate temp=new RestTemplate();
-//	    temp.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
-//        final String url="http://localhost:8989/acceptrequest";
-//        FriendRequest frExpected=new FriendRequest();
-//		frExpected.setRequestId(1);
-//		frExpected.setRequestedBy("abc");
-//		frExpected.setRequestedTo("def");
-//		frExpected.setDate(new Date(2022,9,1));   
-//        URI uri=new URI(url);        
-//        HttpHeaders headers=new HttpHeaders();
-//        HttpEntity<FriendRequest> req=new HttpEntity<>(frExpected,headers);
-//        ResponseEntity<String> a =temp.exchange(uri,HttpMethod.DELETE,req, String.class);
-//  
-//       Assertions.assertEquals("","");
-//    }
+
+
 	@Autowired
 	FriendRequestService frs;
 	@Test
@@ -148,26 +132,5 @@ public class FriendRequestTest {
 		 Assertions.assertEquals(c3,0);
 		 
 	}
-//	@Autowired
-//	UsersDao ud;
-//	@Test
-//	void testServicesAcceptRequest() {
-//		Users u1=new Users();
-//		Users u2=new Users();
-//		u1.setUserId("abc");
-//		u2.setUserId("def");
-//		ud.deleteAll();ud.flush();
-//		ud.save(u1);ud.save(u2);ud.flush();
-//		FriendRequest frExpected=new FriendRequest();
-//		frExpected.setRequestedBy("abc");
-//		frExpected.setRequestedTo("def");
-//		frExpected.setDate(new Date(2022,9,1));
-//		frDao.deleteAll();
-//		frDao.flush();
-//		frs.sendaRequest(frExpected);
-//		 long c4=frDao.count();
-//		 frs.acceptRequest(frExpected);
-//		 long c5=frDao.count();
-//		Assertions.assertEquals(c4,c5-1);
-//		}
+	
 }
