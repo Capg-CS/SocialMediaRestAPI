@@ -19,7 +19,7 @@ public class Groups {
 	private String groupId;
 	private String groupName;
 	private String createdBy;
-	private Status status=Status.PENDING;
+	private Status status;
 	/*public enum GroupStatus{
 		ACTIVE,
 		BLOCKED,

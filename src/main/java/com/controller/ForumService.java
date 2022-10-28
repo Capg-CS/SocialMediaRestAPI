@@ -1,6 +1,8 @@
 package com.controller;
 
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -39,7 +41,24 @@ public class ForumService {
 		forumdao.save(forum);
 	}
 	
-	public void deleteForumUser(Users uf) {
-		udao.delete(uf);
-	}
+//	public void deleteForumUser(Users uf) {
+//		udao.delete(uf);
+//	}
+	
+	public List<Forum> deleteForumUser(String userId,String forumId) throws NoUserFoundException {
+        Users user=udao.findByUserId(userId);
+        List<Forum> forumlist;
+        if(user==null) {
+            throw new NoUserFoundException("Invalid User");
+        }else {
+            forumlist=user.getForum();
+            if(forumlist.contains(forumId)) {
+                forumlist.remove(forumlist.indexOf(forumId));
+                user.setForum(forumlist);
+                udao.delete(user);
+                udao.save(user);
+            }
+        }
+        return forumlist;
+    }
 }

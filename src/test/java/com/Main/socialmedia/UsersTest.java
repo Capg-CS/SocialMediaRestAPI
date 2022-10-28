@@ -284,11 +284,7 @@ class UsersTest {
 			List<String> friendlist=u.getFriendList();
 			
 			String friendId="C123";
-			/*friendlist.remove(friendlist.indexOf(friendId));
-			u.setFriendList(friendlist);
-			
-			udao.delete(u1);
-			udao.save(u);*/
+
 			List<String> actual = null;
 			try {
 				 actual=userv.deletefriend(u.getUserId(), friendId);
@@ -345,16 +341,6 @@ class UsersTest {
 			String fromUserId="A123",toUserId="B123";
 			String message="Hello";
 			
-			
-			/*Users to=udao.findByUserId(toUserId);
-			/*if(to.getMessages().containsKey(fromUserId)) {
-				to.getMessages().get(fromUserId).add(message);
-			}
-			else {
-				ArrayList<String> list=new ArrayList<>();
-				list.add(message);
-				to.getMessages().put(fromUserId,list);
-			}*/
 			String actualstring="";
 			try {
 				actualstring = userv.sendmessage(fromUserId, toUserId, message);

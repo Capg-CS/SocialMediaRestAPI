@@ -1,5 +1,7 @@
 package com.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,11 +42,18 @@ public class ForumController {
 		return new ResponseEntity<>("Request sent to join",HttpStatus.OK);
 	}
 	
-	@DeleteMapping("/removeuserfromforum")
-	public ResponseEntity<String> removeUserfromforum(@RequestBody Users u) {
-		fservice.deleteForumUser(u);
-		return new ResponseEntity<>("User deleted",HttpStatus.OK);
-	}
+	@DeleteMapping("/removeuserfromforum/{userId}/{forumId}")
+    public ResponseEntity removeUserfromgroup(@PathVariable String userId,@PathVariable String forumId) {
+        List<Forum> forumlist;
+        try {
+            forumlist=fservice.deleteForumUser(userId,forumId);
+            return new ResponseEntity<>("User deleted",HttpStatus.OK);
+        }
+        catch(NoUserFoundException e) {
+            return new ResponseEntity<>("no such user found",HttpStatus.OK);
+        }
+        
+    }
 	
 	/*@Autowired
 	ForumDao fdao;

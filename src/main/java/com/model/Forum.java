@@ -21,7 +21,7 @@ public class Forum {
 	private String forumName;
 	private String createdBy;
 	private String createdOn;
-	private Status status = Status.PENDING;
+	private Status status;
 	/*public enum ForumStatus{
 		ACTIVE,
 		BLOCKED,

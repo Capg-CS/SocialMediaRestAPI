@@ -1,5 +1,7 @@
 package com.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,9 +46,16 @@ public class GroupController {
 		}	
 	}
 	
-	@DeleteMapping("/removeuserfromgroup")
-	public ResponseEntity<String> removeUserfromgroup(@RequestBody Users u) {
-		gservice.deleteGroupUser(u);
-		return new ResponseEntity<>("User deleted",HttpStatus.OK);
-	}
+	@DeleteMapping("/removeuserfromgroup/{userId}/{groupId}")
+    public ResponseEntity removeUserfromgroup(@PathVariable String userId,@PathVariable String groupId) {
+        List<Groups> grplist;
+        try {
+            grplist=gservice.deleteGroupUser(userId,groupId);
+            return new ResponseEntity<>("User deleted",HttpStatus.OK);
+        }
+        catch(NoUserFoundException e) {
+            return new ResponseEntity<>("no such user found",HttpStatus.OK);
+        }
+        
+    }
 }

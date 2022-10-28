@@ -1,5 +1,7 @@
 package com.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -33,7 +35,20 @@ public class GroupService {
 		groupdao.save(group);
 	}
 	
-	public void deleteGroupUser(Users u) {
-		udao.delete(u);
+	public List<Groups> deleteGroupUser(String userId,String groupId) throws NoUserFoundException {
+        Users user=udao.findByUserId(userId);
+        List<Groups> grplist;
+        if(user==null) {
+            throw new NoUserFoundException("No such User found");
+        }else {
+            grplist=user.getGroups();
+            if(grplist.contains(groupId)) {
+                grplist.remove(grplist.indexOf(groupId));
+                user.setGroups(grplist);
+                udao.delete(user);
+                udao.save(user);
+            }
+        }
+        return grplist;
 	}
 }
