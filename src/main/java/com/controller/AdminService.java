@@ -96,21 +96,125 @@ public class AdminService {
     	usersdao.delete(users);
     }
     
-	public void addGroupService(@RequestBody Groups groups) {
-        groupdao.save(groups);
-    }
-	public void addForumService(@RequestBody Forum forum) {
-        forumdao.save(forum);
-    }
-	public void deleteGroupService(@RequestBody Groups groups) 
-	{
-		groupdao.delete(groups);
-	}
-	public void deleteForumService(@RequestBody Forum forum) 
-	{
-		forumdao.delete(forum);
-	}
+    public void addGroupService(@RequestBody Groups groups)throws NoAdminFoundException{
+        int count=0;
+        try {
+        List<Admin> admin = admindao.findAll();
+      
+        for(Admin a:admin) {
+            if(admin.isEmpty() && groups.getCreatedBy()!=a.getAdminId()) {
 
+
+                count++;
+                break;
+                }   
+        }
+        if(count==0)
+        {
+            groupdao.save(groups);
+        }
+        else {
+            throw new NoAdminFoundException("Not created by Admin or no Admin found");
+        }
+        }
+        catch(NoAdminFoundException e)
+        {
+            throw new NoAdminFoundException("Not created by Admin or no Admin found");       
+        }
+
+
+        }
+
+
+    public void addForumService(@RequestBody Forum forum) throws NoAdminFoundException {
+        int count=0;
+        try {
+        List<Admin> admin = admindao.findAll();
+        
+        for(Admin a:admin) {
+            if(admin.isEmpty() && forum.getCreatedBy()!=a.getAdminId()) {
+
+
+                count++;
+                break;
+                }   
+        }
+        if(count==0)
+        {
+            forumdao.save(forum);
+        }
+        else {
+            throw new NoAdminFoundException("Not created by Admin or no Admin found");
+        }
+        }
+        catch(NoAdminFoundException e)
+        {
+            throw new NoAdminFoundException("Not created by Admin or no Admin found");       
+        }
+
+    }
+    public void deleteGroupService(@RequestBody Groups groups)throws NoAdminFoundException{
+        int count=0;
+        try {
+        List<Admin> admin = admindao.findAll();
+        
+        for(Admin a:admin) {
+            if(admin.isEmpty() && groups.getCreatedBy()!=a.getAdminId()) {
+
+
+                count++;
+                break;
+                }   
+        }
+        if(count==0)
+        {
+            groupdao.delete(groups);
+        }
+        else {
+            throw new NoAdminFoundException("Not created by Admin or no Admin found");
+        }
+        }
+        catch(NoAdminFoundException e)
+        {
+            throw new NoAdminFoundException("Not created by Admin or no Admin found");       
+        }
+
+
+        }
+
+    public void deleteForumService(@RequestBody Forum forum) throws NoAdminFoundException {
+        int count=0;
+        try {
+        List<Admin> admin = admindao.findAll();
+        
+        for(Admin a:admin) {
+            if(admin.isEmpty() && forum.getCreatedBy()!=a.getAdminId()) {
+
+
+                count++;
+                break;
+                }   
+        }
+        if(count==0)
+        {
+            forumdao.delete(forum);
+        }
+        else {
+            throw new NoAdminFoundException("Not created by Admin or no Admin found");
+        }
+        }
+        catch(NoAdminFoundException e)
+        {
+            throw new NoAdminFoundException("Not created by Admin or no Admin found");       
+        }
+
+    }
+
+	
+	
+	
+	
+	//--------------------------------Shivam----------------------
 	public ResponseEntity blockComment(Comment com) throws NoCommentFoundException {
 			
 			int commentId=com.getCommentId();
@@ -143,6 +247,46 @@ public class AdminService {
 			Users u=usersdao.findByUserId(userId);
 			if(u==null)		throw new NoUserFoundException("no user found with userId: "+userId);
 			u.setStatus(Users.UserStatus.BLOCKED);
+			
+			usersdao.saveAndFlush(u);
+			
+			return new ResponseEntity<String>("User get Blocked with userId :"+userId,HttpStatus.OK);
+			
+	}
+	
+	//unblock
+	public ResponseEntity unblockComment(Comment com) throws NoCommentFoundException {
+			
+			int commentId=com.getCommentId();
+			Comment c=commentdao.findById(commentId).get();
+			System.out.println(c);
+			if(c==null)		throw new NoCommentFoundException("No comment found with commentId :"+commentId);
+			c.setStatus(CommentStatus.ACTIVE);
+			
+			commentdao.saveAndFlush(c);
+			
+			return new ResponseEntity<String>("Comment get Blocked with commentId :"+commentId,HttpStatus.OK);
+	}
+		
+	public ResponseEntity unblockPost(Post post) throws NoPostFoundException {
+			
+			int postID = post.getPostId();
+			Post p=postdao.findById(postID).get();
+			if(p==null)		throw new NoPostFoundException("No Post found with PostId :" + postID);
+			p.setStatus(PostStatus.ACTIVE);
+			
+			postdao.saveAndFlush(p);
+			
+			return new ResponseEntity<String>("Post get Blocked with postId :"+postID,HttpStatus.OK);
+	}
+	
+		
+	public ResponseEntity unblockUser(Users user) throws NoUserFoundException {
+			
+			String userId=user.getUserId();
+			Users u=usersdao.findByUserId(userId);
+			if(u==null)		throw new NoUserFoundException("no user found with userId: "+userId);
+			u.setStatus(Users.UserStatus.ACTIVE);
 			
 			usersdao.saveAndFlush(u);
 			

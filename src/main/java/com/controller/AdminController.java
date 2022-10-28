@@ -14,6 +14,7 @@ import com.model.*;
 
 import com.exception.NoAdminFoundException;
 import com.exception.NoCommentFoundException;
+import com.exception.NoGroupFoundException;
 import com.exception.NoPostFoundException;
 import com.exception.NoUserFoundException;
 
@@ -40,6 +41,10 @@ public class AdminController {
 		return new ResponseEntity<String>("Admin added successfully",HttpStatus.OK);
 	}
 
+	@GetMapping("/getallamin")
+	public List<Admin> getalladmin(){
+		return admindao.findAll();
+	}
 	
 	@PatchMapping("/updateadmin")
 	public ResponseEntity<String> updateAdmin(@RequestBody Admin admin) {
@@ -80,31 +85,85 @@ public class AdminController {
 		return new ResponseEntity<String>("User Deleted Successfully",HttpStatus.OK);
 	}
 	
+	@GetMapping("/getallgroups")
+    public List<Groups> getallgroups() throws NoGroupFoundException{
+        try {
+        if(groupdao.count()==0)
+        {
+            throw new NoGroupFoundException("No Groups Found");
+        }
+        return groupdao.findAll();
+    }
+        catch(NoGroupFoundException e)
+        {
+            throw new NoGroupFoundException("No Groups Found");
+        }
+        }
+
+    @GetMapping("/getallforums")
+    public List<Forum> getallforums()throws NoGroupFoundException{
+        try {
+        if(forumdao.count()==0)
+        {
+            throw new NoGroupFoundException("No Groups Found");
+        }
+        return forumdao.findAll();
+    }
+        catch(NoGroupFoundException e)
+        {
+            throw new NoGroupFoundException("No Groups Found");
+        }
+        }
     @PostMapping("/addGroup")
-	public ResponseEntity<String>addgroups(@RequestBody Groups groups)
+    public ResponseEntity<String>addgroups(@RequestBody Groups groups) throws NoAdminFoundException 
     {
-		
-		adminservice.addGroupService(groups);
-		return new ResponseEntity<String>("Group added successfully",HttpStatus.OK);
-	}
+        try {
+            adminservice.addGroupService(groups);
+            return new ResponseEntity<String>("Group added successfully",HttpStatus.OK);
+        }
+        catch(NoAdminFoundException e) 
+        {
+            throw new NoAdminFoundException("Not created by Admin or no Admin found");        
+ 
+        }
+
+    }
     @PostMapping("/addForum")
-	public ResponseEntity<String> addForum(@RequestBody Forum forum){
-		
-    	adminservice.addForumService(forum);
-		return new ResponseEntity<String>("Added Forum", HttpStatus.OK);
-	}
+    public ResponseEntity<String> addForum(@RequestBody Forum forum)throws NoAdminFoundException {
+        try {
+        adminservice.addForumService(forum);
+        return new ResponseEntity<String>("Added Forum", HttpStatus.OK);
+        }
+        catch(NoAdminFoundException e)
+        {
+            throw new NoAdminFoundException("Not created by Admin or no Admin found");        
+ 
+        }
+    }
     @DeleteMapping("/deleteGroup")
-	public ResponseEntity<String> deletegroups(@RequestBody Groups groups) {
-    	adminservice.deleteGroupService(groups);
-		return new ResponseEntity<String>("Group deleted",HttpStatus.OK);
-		
-	}
+    public ResponseEntity<String> deletegroups(@RequestBody Groups groups)throws NoAdminFoundException  {
+        try {
+            adminservice.deleteGroupService(groups);
+            return new ResponseEntity<String>("Group deleted successfully",HttpStatus.OK);
+        }
+        catch(NoAdminFoundException e) 
+        {
+            throw new NoAdminFoundException("Not created by Admin or no Admin found");        
+ 
+        }
+    }
     @DeleteMapping("/deleteForum")
-	public ResponseEntity<String> deleteForum(@RequestBody Forum forum) {
-    	adminservice.deleteForumService(forum);
-		return new ResponseEntity<String>("Forum deleted",HttpStatus.OK);
-		
-	}
+    public ResponseEntity<String> deleteForum(@RequestBody Forum forum) throws NoAdminFoundException{
+        try {
+            adminservice.deleteForumService(forum);
+            return new ResponseEntity<String>("Forum deleted", HttpStatus.OK);
+            }
+            catch(NoAdminFoundException e)
+            {
+                throw new NoAdminFoundException("Not created by Admin or no Admin found");        
+ 
+            }
+    }
 	@PatchMapping("/updateGroup")
 	public ResponseEntity<String> updateGroup(@RequestBody Groups groups)
 	{
@@ -114,9 +173,6 @@ public class AdminController {
 	@PatchMapping("/updateForum")
 	public ResponseEntity<String> updateForum(@RequestBody Forum forum)
 	{
-		//Optional<Forum> forumdata = dao.findById(forum.getForumId());
-	//	forumdata.get().setCreatedBy(forum.getCreatedBy());   // data fetched then updated
-		
 		forumdao.save(forum);
 		
 		return new ResponseEntity<String>("Update Successfully",HttpStatus.OK);
@@ -144,6 +200,12 @@ public class AdminController {
 		
 		return new ResponseEntity<String>("Updated Successfully",HttpStatus.OK);
 	}
+	    
+	    
+	
+	
+	
+	//---------------------------Shivam-------------------------
 	    @PostMapping("/blockcomment")
 	    public ResponseEntity blockComment(@RequestBody Comment c) {
 	        
@@ -165,10 +227,42 @@ public class AdminController {
 	    }    
 	    
 	    @PostMapping("/blockuser")
-	    public ResponseEntity blockuser(@RequestBody Users u) {
+	    public ResponseEntity blockUser(@RequestBody Users u) {
 	        
 	        try {
 	            return adminservice.blockUser(u);
+	        }
+	        catch (NoUserFoundException e) {
+	            return new ResponseEntity(e.getMessage(),HttpStatus.OK);
+	        }
+	    }
+	    
+	    //unblock
+	    @PostMapping("/unblockcomment")
+	    public ResponseEntity unblockComment(@RequestBody Comment c) {
+	        
+	        try {
+	            return adminservice.unblockComment(c);
+	        } catch (NoCommentFoundException e) {
+	            return new ResponseEntity(e.getMessage(),HttpStatus.OK);
+	        }
+	    }    
+	    
+	    @PostMapping("/unblockpost")
+	    public ResponseEntity unblockPost(@RequestBody Post p) {
+	        
+	        try {
+	            return adminservice.unblockPost(p);
+	        } catch (NoPostFoundException e) {
+	            return new ResponseEntity(e.getMessage(),HttpStatus.OK);
+	        }
+	    }    
+	    
+	    @PostMapping("/unblockuser")
+	    public ResponseEntity unblockUser(@RequestBody Users u) {
+	        
+	        try {
+	            return adminservice.unblockUser(u);
 	        }
 	        catch (NoUserFoundException e) {
 	            return new ResponseEntity(e.getMessage(),HttpStatus.OK);

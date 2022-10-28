@@ -245,11 +245,11 @@ class AdminTest {
 		Assertions.assertFalse(adminservice.adminGetAllUsersService().toString().contains(users.toString()));	
 	}
 	
-	
+	//-------------------------------Shivam-------------------------
 	@Test
 	void testBlockComment() throws NoCommentFoundException {
 		Comment c=new Comment();
-		c.setStatus(CommentStatus.ACTIVE);
+		c.setStatus(CommentStatus.BLOCKED);
 		commentdao.save(c);
 
 		ResponseEntity re=adminservice.blockComment(c);
@@ -264,7 +264,7 @@ class AdminTest {
 		p.setDate(null);
 		p.setDescription("A Trip to Hawai");
 		p.setPostedBy("user123");
-		p.setStatus(PostStatus.ACTIVE);
+		p.setStatus(PostStatus.BLOCKED);
 		p.setComments(null);
 		p.setLikes(null);
 		
@@ -272,7 +272,7 @@ class AdminTest {
 		p.setDate(date);
 		
 		postdao.save(p);
-		Post p1=new Post(p.getPostId()+1,"user123",null,"New world",PostStatus.ACTIVE,null,null);
+		Post p1=new Post(p.getPostId()+1,"user123",null,"New world",PostStatus.BLOCKED,null,null);
 		postdao.save(p1);
 		ResponseEntity re=adminservice.blockPost(p);
 		ResponseEntity res=adminservice.blockPost(p1);
@@ -286,7 +286,7 @@ class AdminTest {
 	@Test
 	void testBlockUser() throws NoUserFoundException {
 		List<String> list1 = Arrays.asList(new String[]{"B123", "C123"});
-		Users u = new Users("A123", "john@gmail.com", "john123", 25,UserStatus.ACTIVE,list1,null,null,null,null);
+		Users u = new Users("A123", "john@gmail.com", "john123", 25,UserStatus.BLOCKED,list1,null,null,null,null);
 		
 		usersdao.save(u);
 		ResponseEntity re=adminservice.blockUser(u);
@@ -341,7 +341,116 @@ class AdminTest {
 	    URI uri=new URI(url);
 		
 	    List<String> list1 = Arrays.asList(new String[]{"B123", "C123"});
-		Users u = new Users("A123", "john@gmail.com", "john123", 25,UserStatus.ACTIVE,list1,null,null,null,null);
+		Users u = new Users("A123", "john@gmail.com", "john123", 25,UserStatus.BLOCKED,list1,null,null,null,null);
+		
+	    usersdao.save(u);
+	    HttpHeaders headers=new HttpHeaders();
+	    
+        HttpEntity<Users> req=new HttpEntity<>(u,headers);
+        
+	    ResponseEntity<String> res=template.postForEntity(uri,req ,String.class);
+	    Assertions.assertEquals(HttpStatus.OK,res.getStatusCode());
+      
+    }
+	
+	
+	//---------------------------unblock----------------------
+	@Test
+	void testUnblockComment() throws NoCommentFoundException {
+		Comment c=new Comment();
+		c.setStatus(CommentStatus.BLOCKED);
+		commentdao.save(c);
+
+		ResponseEntity re=adminservice.unblockComment(c);
+		
+		Assertions.assertEquals(re.getStatusCode(), HttpStatus.OK);
+		
+	}
+	
+	@Test
+	void testUnblockPost() throws NoPostFoundException {
+		Post p=new Post();
+		p.setDate(null);
+		p.setDescription("A Trip to Hawai");
+		p.setPostedBy("user123");
+		p.setStatus(PostStatus.BLOCKED);
+		p.setComments(null);
+		p.setLikes(null);
+		
+		Date date=new Date();
+		p.setDate(date);
+		
+		postdao.save(p);
+		Post p1=new Post(p.getPostId()+1,"user123",null,"New world",PostStatus.BLOCKED,null,null);
+		postdao.save(p1);
+		ResponseEntity re=adminservice.unblockPost(p);
+		ResponseEntity res=adminservice.unblockPost(p1);
+		
+		Assertions.assertEquals(re.getStatusCode(), HttpStatus.OK);
+		Assertions.assertEquals(true,re.getBody().toString().contains("Post get Blocked with postId :"));
+		Assertions.assertEquals(true,res.getBody().toString().contains("Post get Blocked with postId :"));
+		
+	}
+	
+	@Test
+	void testUnblockUser() throws NoUserFoundException {
+		List<String> list1 = Arrays.asList(new String[]{"B123", "C123"});
+		Users u = new Users("A123", "john@gmail.com", "john123", 25,UserStatus.BLOCKED,list1,null,null,null,null);
+		
+		usersdao.save(u);
+		ResponseEntity re=adminservice.unblockUser(u);
+		
+		Assertions.assertEquals(re.getStatusCode(), HttpStatus.OK);
+		
+	}
+
+	@Test
+    void testunBlockCommentApi() throws URISyntaxException, JsonProcessingException {
+		
+	    RestTemplate template=new RestTemplate();
+	    final String url="http://localhost:8080/unblockcomment";
+	    URI uri=new URI(url);
+	    
+	    Comment c=new Comment();
+		
+	    commentdao.save(c);
+	    HttpHeaders headers=new HttpHeaders();
+        HttpEntity<Comment> req=new HttpEntity<Comment>(c,headers);
+        System.out.println(c);
+        System.out.println();
+	    ResponseEntity<String> res=template.postForEntity(uri,req ,String.class);
+	    Assertions.assertEquals(HttpStatus.OK,res.getStatusCode());
+	    
+      
+    }
+	
+	@Test
+    void testUnblockPostApi() throws URISyntaxException, JsonProcessingException {
+		
+	    RestTemplate template=new RestTemplate();
+	    final String url="http://localhost:8080/unblockpost";
+	    URI uri=new URI(url);
+	    
+	    Post p=new Post();
+		
+	    postdao.save(p);
+	    HttpHeaders headers=new HttpHeaders();
+        HttpEntity<Post> req=new HttpEntity<>(p,headers);
+        
+	    ResponseEntity<String> res=template.postForEntity(uri,req ,String.class);
+	    Assertions.assertEquals(HttpStatus.OK,res.getStatusCode());
+      
+    }
+	
+	@Test
+    void testUnblockUserApi() throws URISyntaxException, JsonProcessingException {
+		
+	    RestTemplate template=new RestTemplate();
+	    final String url="http://localhost:8080/unblockuser";
+	    URI uri=new URI(url);
+		
+	    List<String> list1 = Arrays.asList(new String[]{"B123", "C123"});
+		Users u = new Users("A123", "john@gmail.com", "john123", 25,UserStatus.BLOCKED,list1,null,null,null,null);
 		
 	    usersdao.save(u);
 	    HttpHeaders headers=new HttpHeaders();
