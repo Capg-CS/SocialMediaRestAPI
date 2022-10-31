@@ -25,6 +25,7 @@ import com.exception.NoFriendFoundException;
 import com.exception.NoMessageFoundException;
 import com.exception.NoUserFoundException;
 import com.model.Users;
+import com.model.Users.UserStatus;
 
 @Component
 public class UserService {
@@ -32,14 +33,12 @@ public class UserService {
 	@Autowired
 	UsersDAO udao;
 	
-	
-	
+
 	//---------------------------------shivam---------------------------------------
 	public Set<String> userIdList;
 
 	public ResponseEntity adduser(Users u) {	
 		u.setForum(null);
-		u.setStatus(null);
 		u.setFriendList(null);
 		u.setGroups(null);
 		udao.save(u);
@@ -221,9 +220,11 @@ public class UserService {
 	
 	
 	public String sendmessage(String fromuserId, String toUserId, String message) throws NoUserFoundException,NoFriendFoundException,MessageCannotBeEmptyException {
-		Users tolist=udao.findByUserId(toUserId);
-		Users fromlist=udao.findByUserId(fromuserId);
-		if(fromlist==null) {
+		Users from=udao.findByUserId(fromuserId);
+        Users to=udao.findByUserId(toUserId);
+        Users tolist=udao.findByUserId(toUserId);
+        Users fromlist=udao.findByUserId(fromuserId);
+        if(fromlist==null || from.getStatus()==UserStatus.BLOCKED || to.getStatus()==UserStatus.BLOCKED ) {
 			throw new NoUserFoundException("Invalid user");
 		}else {
 			List<String> fromfriendList=fromlist.getFriendList();

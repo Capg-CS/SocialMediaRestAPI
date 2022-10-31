@@ -387,8 +387,8 @@ class AdminTest {
 		ResponseEntity res=adminservice.unblockPost(p1);
 		
 		Assertions.assertEquals(re.getStatusCode(), HttpStatus.OK);
-		Assertions.assertEquals(true,re.getBody().toString().contains("Post get Blocked with postId :"));
-		Assertions.assertEquals(true,res.getBody().toString().contains("Post get Blocked with postId :"));
+		Assertions.assertEquals(true,re.getBody().toString().contains("Post get UnBlocked with postId :"));
+		Assertions.assertEquals(true,res.getBody().toString().contains("Post get UnBlocked with postId :"));
 		
 	}
 	

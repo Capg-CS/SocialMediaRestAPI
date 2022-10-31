@@ -3,6 +3,7 @@ package com.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -97,117 +98,80 @@ public class AdminService {
     }
     
     public void addGroupService(@RequestBody Groups groups)throws NoAdminFoundException{
-        int count=0;
+        //int count=0;
         try {
-        List<Admin> admin = admindao.findAll();
-      
-        for(Admin a:admin) {
-            if(admin.isEmpty() && groups.getCreatedBy()!=a.getAdminId()) {
-
-
-                count++;
-                break;
-                }   
-        }
-        if(count==0)
-        {
+       Optional<Admin> a= admindao.findById(groups.getCreatedBy());
+        if(a.isPresent())
             groupdao.save(groups);
-        }
-        else {
-            throw new NoAdminFoundException("Not created by Admin or no Admin found");
-        }
+         else
+             throw new NoAdminFoundException("No Admin Found");
+
+
+
         }
         catch(NoAdminFoundException e)
         {
             throw new NoAdminFoundException("Not created by Admin or no Admin found");       
         }
-
-
-        }
-
-
-    public void addForumService(@RequestBody Forum forum) throws NoAdminFoundException {
-        int count=0;
-        try {
-        List<Admin> admin = admindao.findAll();
-        
-        for(Admin a:admin) {
-            if(admin.isEmpty() && forum.getCreatedBy()!=a.getAdminId()) {
-
-
-                count++;
-                break;
-                }   
-        }
-        if(count==0)
-        {
-            forumdao.save(forum);
-        }
-        else {
-            throw new NoAdminFoundException("Not created by Admin or no Admin found");
-        }
-        }
-        catch(NoAdminFoundException e)
-        {
-            throw new NoAdminFoundException("Not created by Admin or no Admin found");       
-        }
-
     }
+
+
+    public void addForumService(@RequestBody Forum forum)throws NoAdminFoundException{
+        //int count=0;
+        try {
+       Optional<Admin> a= admindao.findById(forum.getCreatedBy());
+        if(a.isPresent())
+        	forumdao.save(forum);
+         else
+             throw new NoAdminFoundException("No Admin Found");
+
+
+
+        }
+        catch(NoAdminFoundException e)
+        {
+            throw new NoAdminFoundException("Not created by Admin or no Admin found");       
+        }
+    }
+    
+    
+
+    
     public void deleteGroupService(@RequestBody Groups groups)throws NoAdminFoundException{
-        int count=0;
+        //int count=0;
         try {
-        List<Admin> admin = admindao.findAll();
-        
-        for(Admin a:admin) {
-            if(admin.isEmpty() && groups.getCreatedBy()!=a.getAdminId()) {
-
-
-                count++;
-                break;
-                }   
-        }
-        if(count==0)
-        {
+       Optional<Admin> a= admindao.findById(groups.getCreatedBy());
+        if(a.isPresent())
             groupdao.delete(groups);
-        }
-        else {
-            throw new NoAdminFoundException("Not created by Admin or no Admin found");
-        }
+         else
+             throw new NoAdminFoundException("No Admin Found");
+
+
+
         }
         catch(NoAdminFoundException e)
         {
             throw new NoAdminFoundException("Not created by Admin or no Admin found");       
         }
+    }
 
 
-        }
-
-    public void deleteForumService(@RequestBody Forum forum) throws NoAdminFoundException {
-        int count=0;
+    public void deleteForumService(@RequestBody Forum forum)throws NoAdminFoundException{
+        //int count=0;
         try {
-        List<Admin> admin = admindao.findAll();
-        
-        for(Admin a:admin) {
-            if(admin.isEmpty() && forum.getCreatedBy()!=a.getAdminId()) {
+       Optional<Admin> a= admindao.findById(forum.getCreatedBy());
+        if(a.isPresent())
+        	forumdao.delete(forum);
+         else
+             throw new NoAdminFoundException("No Admin Found");
 
 
-                count++;
-                break;
-                }   
-        }
-        if(count==0)
-        {
-            forumdao.delete(forum);
-        }
-        else {
-            throw new NoAdminFoundException("Not created by Admin or no Admin found");
-        }
+
         }
         catch(NoAdminFoundException e)
         {
             throw new NoAdminFoundException("Not created by Admin or no Admin found");       
         }
-
     }
 
 	
@@ -265,7 +229,7 @@ public class AdminService {
 			
 			commentdao.saveAndFlush(c);
 			
-			return new ResponseEntity<String>("Comment get Blocked with commentId :"+commentId,HttpStatus.OK);
+			return new ResponseEntity<String>("Comment get UnBlocked with commentId :"+commentId,HttpStatus.OK);
 	}
 		
 	public ResponseEntity unblockPost(Post post) throws NoPostFoundException {
@@ -277,7 +241,7 @@ public class AdminService {
 			
 			postdao.saveAndFlush(p);
 			
-			return new ResponseEntity<String>("Post get Blocked with postId :"+postID,HttpStatus.OK);
+			return new ResponseEntity<String>("Post get UnBlocked with postId :"+postID,HttpStatus.OK);
 	}
 	
 		
@@ -290,7 +254,7 @@ public class AdminService {
 			
 			usersdao.saveAndFlush(u);
 			
-			return new ResponseEntity<String>("User get Blocked with userId :"+userId,HttpStatus.OK);
+			return new ResponseEntity<String>("User get UnBlocked with userId :"+userId,HttpStatus.OK);
 			
 	}
 	
