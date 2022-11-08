@@ -1,6 +1,9 @@
-package com.controller;	
+package com.controller;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -17,51 +20,55 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.client.RestTemplate;
 
-import com.dao.UsersDAO;
+import com.dao.UserDao;
 import com.exception.MessageCannotBeEmptyException;
 import com.exception.NoFriendFoundException;
+import com.exception.NoLoggedUserFoundException;
 import com.exception.NoMessageFoundException;
 import com.exception.NoUserFoundException;
 import com.model.Users;
 import com.model.Users.UserStatus;
 
-@Component
-public class UserService {
-	
-	@Autowired
-	UsersDAO udao;
-	
 
-	//---------------------------------shivam---------------------------------------
-	public Set<String> userIdList;
+@Component
+public class UsersService {
+    
+    @Autowired
+    UserDao udao;
+
+	public Set<String> userIdList;	
+	
+	//---------------------------Shivam's code---------------------------
 
 	public ResponseEntity adduser(Users u) {	
-		u.setForum(null);
-		u.setFriendList(null);
-		u.setGroups(null);
 		udao.save(u);
-		return new ResponseEntity<>("user added successfully",HttpStatus.OK);
+		return new ResponseEntity("user added successfully",HttpStatus.OK);
 	}
 
-	public ResponseEntity destroySession(@RequestParam("userId") String userId, Model model, HttpSession session) {
+	public ResponseEntity destroySession(Users u, HttpSession session) throws NoLoggedUserFoundException {
 		
+		String userId=u.getUserId();
 		String str="MY_LOGGED_USERS";
 		Set<String> userIdList = (Set<String>) session.getAttribute(str);
 
 		if (userIdList == null) {
-			return new ResponseEntity<>("no such user is logged in",HttpStatus.OK);
+			throw new NoLoggedUserFoundException(str+" List is Null");
 		}
 		
 		userIdList.remove(userId);
-		String res="user with userId " +userId+ " is logged out";
-		System.out.println(res);
 		
-		return new ResponseEntity<>(res,HttpStatus.OK);
+//		System.out.println(res);
+		
+		return new ResponseEntity("user with userId " +userId+ " is logged out",HttpStatus.OK);
 	}
+	
 
-	public Set<String> loggedusers(Model model, HttpSession session) {	
+	public Set<String> loggedusers(HttpSession session) {	
 		
 		String str="MY_LOGGED_USERS";
 		Set<String> userIdList = (Set<String>) session.getAttribute(str);
@@ -69,13 +76,13 @@ public class UserService {
 		if (userIdList == null) {
 			userIdList = new HashSet<>();
 		}
-		model.addAttribute("sessionMessages", userIdList);
+
 		return userIdList;
 	}
 	
 	public ResponseEntity authenticateUser(HttpServletRequest request, Users u1)  throws NoUserFoundException {
 		
-		try {
+		
 			String userId=u1.getUserId();
 			String password=u1.getPassword();
 			
@@ -85,15 +92,12 @@ public class UserService {
 				if(u.getPassword().equals(password)){
 					
 					userIdList = (Set<String>) request.getSession().getAttribute("MY_LOGGED_USERS");
-					if (userIdList == null) {
-						
+					if (userIdList == null) {						
 						userIdList = new HashSet<>();
 						request.getSession().setAttribute("MY_LOGGED_USERS", userIdList);
 					}
 					userIdList.add(userId);					
-					request.getSession().setAttribute("MY_LOGGED_USERS", userIdList);
-					
-					
+					request.getSession().setAttribute("MY_LOGGED_USERS", userIdList);					
 					
 					TimerTask task = new TimerTask() {
 				        public void run() {
@@ -102,38 +106,30 @@ public class UserService {
 				        }
 				    };
 				    Timer timer = new Timer("Timer");
-				    
-				    long delay = 60000L;
-				    timer.schedule(task, delay);
-				    
-				    
-				    
+				    timer.schedule(task, 25000);				    
 
-					return new ResponseEntity<>("authenticaton successful",HttpStatus.OK);
+					return new ResponseEntity("authenticaton successful",HttpStatus.OK);
 				}
-				else
-					return  new ResponseEntity<>("authentication failed",HttpStatus.OK);
+				else {
+					return  new ResponseEntity("authentication failed",HttpStatus.OK);
+				}					
 			}
-			else	throw new NoUserFoundException("No user found");
-			
-		}catch(NoUserFoundException e) {
-            throw new NoUserFoundException("No user found");
-        }
+			else {
+				throw new NoUserFoundException("No user found");
+			}
 		
 		
 	}
 
 	
-//	public ResponseEntity blockUser(String userId) throws NoUserFoundException {
+//	public ResponseEntity blockComment(String userId) {
 //		
 //		Users u=udao.findByUserId(userId);
 //		u.setStatus(Users.UserStatus.BLOCKED);
-//		if(u==null)        
-//			throw new NoUserFoundException("no user found with userId: "+userId);
-//		else
-//			udao.saveAndFlush(u);
 //		
-//		return new ResponseEntity<>("blocked",HttpStatus.OK);
+//		udao.saveAndFlush(u);
+//		
+//		return new ResponseEntity("blocked",HttpStatus.OK);
 //		
 //	}
 	
@@ -144,9 +140,29 @@ public class UserService {
 	
 	
 	
-	//------------------------Aditi-------------------------------------
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	//--------------------------Aditi's code-----------------
+    
 	public Map<String, String> getAllUsers() throws NoUserFoundException{
+		List<String> list1 = Arrays.asList(new String[]{"B123", "C123"});
+		List<String> list2 = Arrays.asList(new String[]{"A123", "C123"});
+		List<String> list3 = Arrays.asList(new String[]{"A123", "B123"});
+//		Users u1 = new Users("A123", "john@gmail.com", "john123", 25, UserStatus.ACTIVE,list1,null);
+//		Users u2 = new Users("B123", "mary@gmail.com", "mary123", 25, UserStatus.ACTIVE,list2,null);
+//		Users u3 = new Users("C123", "mary@gmail.com", "mary123", 25, UserStatus.ACTIVE,list3,null);
+//		udao.save(u1);
+//		udao.save(u2);
+//		udao.save(u3);
 		List<Users> userList = udao.findAll();
 		Map<String, String> usernames = new HashMap<>();
 		if(userList.size()!=0) {
@@ -161,20 +177,17 @@ public class UserService {
 		
 	}
 	
-	
-	
-	
 	public Users getUserByUserId(String userId) throws NoUserFoundException   {
-			Users user = udao.findByUserId(userId);
-			if(user!=null)
-				return user;
-			else
-				throw new NoUserFoundException("No user found");
+		Users user = udao.findByUserId(userId);
+		if(user!=null)
+			return user;
+		else
+			throw new NoUserFoundException("No user found");
 	}
-	
-	
-	
-	
+
+
+
+
 	public List<String> getFriendList(String userId) throws NoFriendFoundException,NoUserFoundException{
 		Users u=udao.findByUserId(userId);
 		if(u==null) {
@@ -194,28 +207,19 @@ public class UserService {
 	}
 	
 	
-
+	
 	public List<String> deletefriend(String userId, String friendId) throws NoFriendFoundException,NoUserFoundException {
 		// TODO Auto-generated method stub
 		Users u=udao.findByUserId(userId);
-		Users u1=udao.findByUserId(friendId);
 		if(u==null) {
 			throw new NoUserFoundException("Invalid User");
 		}else {
 			List<String> friendlist=u.getFriendList();
-			List<String> friendlist1=u1.getFriendList();
-			if(friendlist.contains(friendId) && friendlist1.contains(userId) ) {
+			if(friendlist.contains(friendId)) {
 				friendlist.remove(friendlist.indexOf(friendId));
 				u.setFriendList(friendlist);
 				udao.delete(u);
 				udao.save(u);
-				
-				friendlist1.remove(friendlist1.indexOf(userId));
-				u1.setFriendList(friendlist1);
-				udao.delete(u1);
-				udao.save(u1);
-				
-				
 				return friendlist;
 			}else {
 				throw new NoFriendFoundException(friendId+" not found");
@@ -229,11 +233,9 @@ public class UserService {
 	
 	
 	public String sendmessage(String fromuserId, String toUserId, String message) throws NoUserFoundException,NoFriendFoundException,MessageCannotBeEmptyException {
-		Users from=udao.findByUserId(fromuserId);
-        Users to=udao.findByUserId(toUserId);
-        Users tolist=udao.findByUserId(toUserId);
-        Users fromlist=udao.findByUserId(fromuserId);
-        if(fromlist==null || from.getStatus()==UserStatus.BLOCKED || to.getStatus()==UserStatus.BLOCKED ) {
+		Users tolist=udao.findByUserId(toUserId);
+		Users fromlist=udao.findByUserId(fromuserId);
+		if(fromlist==null) {
 			throw new NoUserFoundException("Invalid user");
 		}else {
 			List<String> fromfriendList=fromlist.getFriendList();
@@ -276,7 +278,49 @@ public class UserService {
 		else
 			throw new NoMessageFoundException("Inbox Empty! No messages Found");
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	//----------------------tanusha's code------------------------
+	
+	
+	
+	
+	
+	
 
-
-
+	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

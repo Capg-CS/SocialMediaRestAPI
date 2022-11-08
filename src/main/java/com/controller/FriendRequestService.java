@@ -1,5 +1,6 @@
 package com.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,11 +40,17 @@ public class FriendRequestService {
 	}
      	
 
-	public ResponseEntity sendaRequest(FriendRequest i) {
-		frDao.save(i);
-		return new ResponseEntity("Request Sent",HttpStatus.OK);
-	}
-
+    public ResponseEntity sendaRequest(String SentBy,String SentTo) {
+    	 
+        FriendRequest i=new FriendRequest();
+        i.setRequestedBy(SentBy);
+        i.setRequestedTo(SentTo);
+        Date date=new Date();
+        i.setDate(date);
+        frDao.save(i);
+        return new ResponseEntity("Request Sent",HttpStatus.OK);
+    }
+    
 	 public ResponseEntity acceptRequest( Integer id) {
 	        FriendRequest i=frDao.getById(id);
 	        Users user1=userDao.getById(i.getRequestedBy());

@@ -52,10 +52,21 @@ public ArrayList<Post> retrivePostFromDB(){
    }
    
    public ArrayList<Post> deletePostFromDB(Integer postID){
-	postDao.deleteById(postID);
-	
-	ArrayList<Post> result=retrivePostFromDB();
-	return result;
+	   Post p= postDao.getById(postID);
+	    List<Integer> cmtIds=p.getComments();
+	    List<Integer> likIds=p.getLikes();
+	    
+	    for(Integer i:cmtIds) {
+	        cD.deleteById(i);
+	    }
+	    for(Integer i:likIds) {
+	    	lD.deleteById(i);
+	    }
+	    
+		postDao.deleteById(postID);
+		
+		ArrayList<Post> result=retrivePostFromDB();
+		return result;
     }
 
    public ResponseEntity addaLike(Integer postID, Likes i) {

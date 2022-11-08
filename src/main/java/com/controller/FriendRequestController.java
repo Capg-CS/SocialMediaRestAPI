@@ -24,13 +24,13 @@ public class FriendRequestController {
 	FriendRequestService frService;
 	
 	@PostMapping("/sendrequest")
-	public ResponseEntity sendRequest(@RequestBody FriendRequest i) {
-		
-    	return frService.sendaRequest(i);
-		
-	}
+	public ResponseEntity sendRequest(@RequestParam String sentBy,@RequestParam String  sentTo) {
+
+        return frService.sendaRequest(sentBy,sentTo);
+
+    }
     @PostMapping("/getmyrequests")
-	public List<FriendRequest> getMyRequests(@RequestBody String a){
+	public List<FriendRequest> getMyRequests(@RequestParam String a){
     	
 		return frService.getRequests(a);		
 	}
