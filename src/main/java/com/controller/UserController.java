@@ -153,7 +153,8 @@ public class UserController  {
 	
 	
 	@PostMapping("/sendmessage/{userId}/{friendId}/{message}")
-	public ResponseEntity sendmessage(@PathVariable String userId,@PathVariable String friendId,@PathVariable String message) throws NoUserFoundException{
+	public ResponseEntity sendmessage(@PathVariable String userId,@PathVariable String friendId,@RequestBody String message) throws NoUserFoundException{
+//	public ResponseEntity sendmessage(@PathVariable String userId,@PathVariable String friendId,@PathVariable String message) throws NoUserFoundException{
 		//Users u=userv.getUserByUserId(userId);
 		String msg;
 		try {

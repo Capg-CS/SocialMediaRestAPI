@@ -335,7 +335,8 @@ class UsersTest {
 		@Test
 		void testcontrollersendmessage() throws URISyntaxException {
 			RestTemplate temp=new RestTemplate();
-			final String url="http://localhost:8080/sendmessage/A123/B123/hi";
+//			final String url="http://localhost:8080/sendmessage/A123/B123/hi";
+			final String url="http://localhost:8080/sendmessage/A123/B123";
 			
 			URI uri=new URI(url);
 			
